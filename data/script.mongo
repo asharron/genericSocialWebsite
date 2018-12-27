@@ -1,0 +1,6 @@
+use social;
+db.createCollection("user");
+db.user.insertOne({
+    "name": "Alex",
+    "age": 22,
+    });
