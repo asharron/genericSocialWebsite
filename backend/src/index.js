@@ -1,4 +1,20 @@
-const { GraphQLServer } = require('graphql-yoga')
+const { GraphQLServer } = require('graphql-yoga');
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
+
+// Connection URL
+var url = 'mongodb://127.0.0.1:27017';
+
+// Use connect method to connect to the server
+MongoClient.connect(url, function(err, client) {
+    assert.equal(null, err);
+    console.log("Connected successfully to database");
+    var db = client.db('social');
+    var alex = db.collection('user').find({"name":"Alex"}).value;
+    console.log(alex);
+
+    client.close();
+});
 
 let links = [{
     id: 'link-0',
@@ -11,7 +27,8 @@ let idCount = links.length
 const resolvers = {
     Query: {
         info: () => `This is an API`,
-        feed: () => links
+        feed: () => links,
+
     },
     Mutation: {
         post: (parent, args) => {
