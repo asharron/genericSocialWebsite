@@ -10,9 +10,11 @@ MongoClient.connect(url, function(err, client) {
     assert.equal(null, err);
     console.log("Connected successfully to database");
     var db = client.db('social');
-    var alex = db.collection('user').find({"name":"Alex"}).value;
-    console.log(alex);
-
+    var alex = db.collection('user').findOne({"name":"Alex"}, (err, result) => {
+    if(err) throw err;
+    console.log(result);
+    console.log(result.name);
+    });
     client.close();
 });
 
@@ -28,7 +30,19 @@ const resolvers = {
     Query: {
         info: () => `This is an API`,
         feed: () => links,
-
+        user: () => {
+            MongoClient.connect(url, function(err, client) {
+                assert.equal(null, err);
+                console.log("Connected successfully to database");
+                var db = client.db('social');
+                var alex = db.collection('user').findOne({"name":"Alex"}, (err, result) => {
+                    if(err) throw err;
+                    console.log(result);
+                    console.log(result.name);
+                });
+                client.close();
+            });
+        }
     },
     Mutation: {
         post: (parent, args) => {
